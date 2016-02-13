@@ -9,25 +9,21 @@ class Food {
 	public $price;
 }
 
+header('Content-Type: text/html; charset=utf-8');
+
 $user = 'root';
 $password = 'root';
 $db = 'go-lunch-db';
 $host = 'localhost';
 $port = 8889;
-
+$endPoint = 'http://www.originalformanka.cz/1-denni-menu/';
 $link = mysql_connect(
    "$host:$port",
    $user,
    $password
 );
 
-header('Content-Type: text/html; charset=utf-8');
-header("Content-Type: text/plain");
-//header('Content-Type: application/json');
-
-$endPoint = 'http://www.originalformanka.cz/1-denni-menu/';
 $doc = file_get_contents($endPoint);
-
 $dom = new DOMDocument;
 $dom->loadHTML($doc);
 $tables = $dom->getElementsByTagName('table');
@@ -58,4 +54,4 @@ foreach($rows as $row) {
     mysql_select_db($db);
     mysql_query($sql) or die(mysql_error());
 }
-?>
+mysql_close();

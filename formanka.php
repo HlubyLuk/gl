@@ -9,9 +9,21 @@ class Food {
 	public $price;
 }
 
+$user = 'root';
+$password = 'root';
+$db = 'go-lunch-db';
+$host = 'localhost';
+$port = 8889;
+
+$link = mysql_connect(
+   "$host:$port",
+   $user,
+   $password
+);
+
 header('Content-Type: text/html; charset=utf-8');
 header("Content-Type: text/plain");
-header('Content-Type: application/json');
+//header('Content-Type: application/json');
 
 $endPoint = 'http://www.originalformanka.cz/1-denni-menu/';
 $doc = file_get_contents($endPoint);
@@ -27,7 +39,7 @@ foreach($rows as $row) {
 	$rowTag = $row->childNodes->item(0)->tagName;
 	if (strcmp($rowTag, 'th') == 0) {
 		if(!empty($day)) {
-			$json[] = $day;
+                    $json[] = $day;
 		}
 		$day = new Day();
 		$day->day = $row->nodeValue;
@@ -38,6 +50,12 @@ foreach($rows as $row) {
 		$food->price = $cells->item(1)->nodeValue;
 		$day->foods[] = $food;
 	}
+    if(empty($day->foods)) {
+        continue;
+    }
+    
+    $sql = "INSERT INTO formanka ( name, price ) VALUES ('$food->name', '$food->price');";
+    mysql_select_db($db);
+    mysql_query($sql) or die(mysql_error());
 }
-echo json_encode($json, false);
 ?>

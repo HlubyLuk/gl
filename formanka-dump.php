@@ -29,6 +29,9 @@ $dom->loadHTML($doc);
 $tables = $dom->getElementsByTagName('table');
 $menu = $tables[1];
 $rows = $menu->getElementsByTagName('tr');
+if($rows->item(0) == NULL) {
+    http_response_code(400);
+}
 $json = [];
 foreach($rows as $row) {
 	$day;
